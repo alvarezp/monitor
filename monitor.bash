@@ -4,8 +4,8 @@ PROC=''
 DOWN_REST_TIMER=20
 UP_REST_TIMER=20
 ON_INIT=''
-ON_RAISEBACK='echo SERVICE IS NOW UP'
-ON_FALLDOWN='echo SERVICE IS NOW DOWN'
+ON_RAISEBACK=''
+ON_FALLDOWN=''
 RAISINGBACK_REST=3
 FALLINGDOWN_REST=3
 
@@ -16,6 +16,10 @@ STATE_DOWN=1
 STATE_RAISING_BACK=2
 STATE_UP=3
 STATE_FALLING_DOWN=4
+STATE_NAME[$STATE_DOWN]='DOWN'
+STATE_NAME[$STATE_RAISING_BACK]='RAISINGBACK'
+STATE_NAME[$STATE_UP]='UP'
+STATE_NAME[$STATE_FALLING_DOWN]='FALLINGDOWN'
 
 print_help() {
 echo "usage: $0 [options] 'command_to_monitor'
@@ -107,7 +111,6 @@ until [ -z "$1" ]; do
 done
 
 down() {
-	printf "%11s %s\n" DOWN "$(date +'%Y-%d-%m %T %Z %a')"
 	sh -c "$PROC" || {
 		sleep $DOWN_REST_TIMER
 		return $STATE_DOWN
@@ -116,7 +119,6 @@ down() {
 }
 
 raising_back() {
-	printf "%11s %s\n" RAISINGBACK "$(date +'%Y-%d-%m %T %Z %a')"
 	for ATTEMPT in $(seq 2 $SUCCEEDS_NEEDED_FOR_RAISEBACK); do
 		sleep $RAISINGBACK_REST
 		sh -c "$PROC" || return $STATE_DOWN
@@ -126,7 +128,6 @@ raising_back() {
 }
 
 up() {
-	printf "%11s %s\n" UP "$(date +'%Y-%d-%m %T %Z %a')"
 	sh -c "$PROC" && {
 		sleep $UP_REST_TIMER
 		return $STATE_UP
@@ -135,7 +136,6 @@ up() {
 }
 
 falling_down() {
-	printf "%11s %s\n" FAILINGDOWN "$(date +'%Y-%d-%m %T %Z %a')"
 	for ATTEMPT in $(seq 2 $FAILURES_NEEDED_FOR_FALLDOWN); do
 		sleep $FALLINGDOWN_REST
 		sh -c "$PROC" && return $STATE_UP
@@ -144,13 +144,24 @@ falling_down() {
 	return $STATE_DOWN
 }
 
+printf "%11s %s\n" START "$(date +'%Y-%d-%m %T %Z %a')"
 $ON_INIT
-NEXT_STATE=$STATE_UP
+sh -c "$PROC" && {
+	printf "%11s %s\n" UP "$(date +'%Y-%d-%m %T %Z %a')"
+	NEXT_STATE=$STATE_UP
+} || {
+	printf "%11s %s\n" DOWN "$(date +'%Y-%d-%m %T %Z %a')"
+	NEXT_STATE=$STATE_DOWN
+}
 while true; do
-	[ $NEXT_STATE -eq $STATE_DOWN ] && state_action="down"
-	[ $NEXT_STATE -eq $STATE_RAISING_BACK ] && state_action="raising_back"
-	[ $NEXT_STATE -eq $STATE_UP ] && state_action="up"
-	[ $NEXT_STATE -eq $STATE_FALLING_DOWN ] && state_action="falling_down"
+	STATE=$NEXT_STATE
+	[ $STATE -eq $STATE_DOWN ] && state_action="down"
+	[ $STATE -eq $STATE_RAISING_BACK ] && state_action="raising_back"
+	[ $STATE -eq $STATE_UP ] && state_action="up"
+	[ $STATE -eq $STATE_FALLING_DOWN ] && state_action="falling_down"
 	$state_action
 	NEXT_STATE=$?
+	if [ "$STATE" != "$NEXT_STATE" ]; then
+		printf "%11s %s\n" ${STATE_NAME[$NEXT_STATE]} "$(date +'%Y-%d-%m %T %Z %a')"
+	fi
 done
