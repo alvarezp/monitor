@@ -144,7 +144,7 @@ falling_down() {
 	return $STATE_DOWN
 }
 
-printf "%11s %s\n" START "$(date +'%Y-%d-%m %T %Z %a')"
+printf "%11s %s\n" INIT "$(date +'%Y-%d-%m %T %Z %a')"
 $ON_INIT
 
 # On INIT, test $PROC and go directly to UP or DOWN.
