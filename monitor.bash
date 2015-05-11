@@ -107,7 +107,7 @@ until [ -z "$1" ]; do
 done
 
 down() {
-	printf "%11s %s\n" DOWN $(date +'%Y-%d-%m %T %Z %a')
+	printf "%11s %s\n" DOWN "$(date +'%Y-%d-%m %T %Z %a')"
 	sh -c "$PROC" || {
 		sleep $DOWN_REST_TIMER
 		return $STATE_DOWN
@@ -116,7 +116,7 @@ down() {
 }
 
 raising_back() {
-	printf "%11s %s\n" RAISINGBACK $(date +'%Y-%d-%m %T %Z %a')
+	printf "%11s %s\n" RAISINGBACK "$(date +'%Y-%d-%m %T %Z %a')"
 	for ATTEMPT in $(seq 2 $SUCCEEDS_NEEDED_FOR_RAISEBACK); do
 		sleep $RAISINGBACK_REST
 		sh -c "$PROC" || return $STATE_DOWN
@@ -126,7 +126,7 @@ raising_back() {
 }
 
 up() {
-	printf "%11s %s\n" UP $(date +'%Y-%d-%m %T %Z %a')
+	printf "%11s %s\n" UP "$(date +'%Y-%d-%m %T %Z %a')"
 	sh -c "$PROC" && {
 		sleep $UP_REST_TIMER
 		return $STATE_UP
@@ -135,7 +135,7 @@ up() {
 }
 
 falling_down() {
-	printf "%11s %s\n" FAILINGDOWN $(date +'%Y-%d-%m %T %Z %a')
+	printf "%11s %s\n" FAILINGDOWN "$(date +'%Y-%d-%m %T %Z %a')"
 	for ATTEMPT in $(seq 2 $FAILURES_NEEDED_FOR_FALLDOWN); do
 		sleep $FALLINGDOWN_REST
 		sh -c "$PROC" && return $STATE_UP
