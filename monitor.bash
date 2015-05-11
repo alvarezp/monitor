@@ -73,16 +73,16 @@ until [ -z "$1" ]; do
 			ON_FALLDOWN=$2
 			shift; shift;;
 		--rest-time)
-			UP_REST_TIME=$2
-			DOWN_REST_TIME=$2
+			UP_REST_TIMER=$2
+			DOWN_REST_TIMER=$2
 			RAISINGBACK_REST=$2
 			FALLINGDOWN_REST=$2
 			shift; shift;;
 		--rest-time-while-down)
-			DOWN_REST_TIME=$2
+			DOWN_REST_TIMER=$2
 			shift; shift;;
 		--rest-time-while-up)
-			UP_REST_TIME=$2
+			UP_REST_TIMER=$2
 			shift; shift;;
 		--raising-back-rest)
 			RAISINGBACK_REST=$2
