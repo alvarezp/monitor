@@ -58,10 +58,10 @@ Options:
 Command to monitor must return 0 on success or non-zero otherwise.
 
 Monitor will start on the INIT state and assume the service is up. On a
-failure, it will transit to the FALLING_DOWN state, which will repeat the task
+failure, it will transit to the FALLINGDOWN state, which will repeat the task
 N times to make sure this was not a temporary failure. If this is not the case,
 monitor will go to the DOWN state. On a success it will transit to the
-RAISING_BACK state and finally, if confirmed, reach back to the UP state.
+RAISINGBACK state and finally, if confirmed, reach back to the UP state.
 "
 }
 
