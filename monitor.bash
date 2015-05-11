@@ -145,7 +145,7 @@ falling_down() {
 }
 
 printf "%11s %s\n" INIT "$(date +'%Y-%d-%m %T %Z %a')"
-$ON_INIT
+sh -c "$ON_INIT"
 
 # On INIT, test $PROC and go directly to UP or DOWN.
 sh -c "$PROC" && {
