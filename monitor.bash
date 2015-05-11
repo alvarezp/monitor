@@ -4,8 +4,8 @@ PROC=''
 DOWN_REST_TIMER=20
 UP_REST_TIMER=20
 ON_INIT=''
-ON_RAISEBACK=''
-ON_FALLDOWN=''
+ON_UP=''
+ON_DOWN=''
 RAISINGBACK_REST=3
 FALLINGDOWN_REST=3
 
@@ -71,10 +71,10 @@ until [ -z "$1" ]; do
 			ON_INIT=$2
 			shift; shift;;
 		--on-up)
-			ON_RAISEBACK=$2
+			ON_UP=$2
 			shift; shift;;
 		--on-down)
-			ON_FALLDOWN=$2
+			ON_DOWN=$2
 			shift; shift;;
 		--rest-time)
 			UP_REST_TIMER=$2
@@ -123,7 +123,7 @@ raising_back() {
 		sleep $RAISINGBACK_REST
 		sh -c "$PROC" || return $STATE_DOWN
 	done
-	$ON_RAISEBACK
+	$ON_UP
 	return $STATE_UP
 }
 
@@ -140,7 +140,7 @@ falling_down() {
 		sleep $FALLINGDOWN_REST
 		sh -c "$PROC" && return $STATE_UP
 	done
-	$ON_FALLDOWN
+	$ON_DOWN
 	return $STATE_DOWN
 }
 
