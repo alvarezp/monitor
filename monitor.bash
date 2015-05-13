@@ -144,15 +144,15 @@ falling_down() {
 	return $STATE_DOWN
 }
 
-printf "%11s %s\n" INIT "$(date +'%Y-%d-%m %T %Z %a')"
+printf "%11s %s\n" INIT "$(date +'%Y-%m-%d %T %Z %a')"
 sh -c "$ON_INIT"
 
 # On INIT, test $PROC and go directly to UP or DOWN.
 sh -c "$PROC" && {
-	printf "%11s %s\n" UP "$(date +'%Y-%d-%m %T %Z %a')"
+	printf "%11s %s\n" UP "$(date +'%Y-%m-%d %T %Z %a')"
 	NEXT_STATE=$STATE_UP
 } || {
-	printf "%11s %s\n" DOWN "$(date +'%Y-%d-%m %T %Z %a')"
+	printf "%11s %s\n" DOWN "$(date +'%Y-%m-%d %T %Z %a')"
 	NEXT_STATE=$STATE_DOWN
 }
 while true; do
@@ -164,6 +164,6 @@ while true; do
 	$state_action
 	NEXT_STATE=$?
 	if [ "$STATE" != "$NEXT_STATE" ]; then
-		printf "%11s %s\n" ${STATE_NAME[$NEXT_STATE]} "$(date +'%Y-%d-%m %T %Z %a')"
+		printf "%11s %s\n" ${STATE_NAME[$NEXT_STATE]} "$(date +'%Y-%m-%d %T %Z %a')"
 	fi
 done
