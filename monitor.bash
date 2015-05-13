@@ -149,12 +149,11 @@ sh -c "$ON_INIT"
 
 # On INIT, test $PROC and go directly to UP or DOWN.
 sh -c "$PROC" && {
-	printf "%11s %s\n" UP "$(date +'%Y-%m-%d %T %Z %a')"
 	NEXT_STATE=$STATE_UP
 } || {
-	printf "%11s %s\n" DOWN "$(date +'%Y-%m-%d %T %Z %a')"
 	NEXT_STATE=$STATE_DOWN
 }
+printf "%11s %s\n" ${STATE_NAME[$NEXT_STATE]} "$(date +'%Y-%m-%d %T %Z %a')"
 while true; do
 	STATE=$NEXT_STATE
 	[ $STATE -eq $STATE_DOWN ] && state_action="down"
